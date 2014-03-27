@@ -15,6 +15,7 @@ namespace TheColony
         private MouseState lastMouseState;
         private Texture2D tHud;
         private Texture2D player_temp;
+        private Texture2D large_background;
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -54,6 +55,7 @@ namespace TheColony
             cursor = game.Content.Load<Texture2D>("Pointer");
             radSprite = game.Content.Load<Texture2D>("radSprite");
             background = game.Content.Load<Texture2D>("background");
+            large_background = game.Content.Load<Texture2D>("Game_Background");
             //cursor = Content.Load<Texture2D>("cursor");
             //fHud = game.Content.Load<SpriteFont>("HudFont");
 
@@ -93,6 +95,17 @@ namespace TheColony
                 playerNewPosition = playerNewPosition - playerOffset;
             }
 
+            if (Math.Abs(playerPosition.X - playerNewPosition.X) < 3 && playerPosition.Y - playerNewPosition.Y != 0)
+            {     // the player is already near his destination
+                playerPosition.X = playerNewPosition.X;
+            }
+            else  // move the player toward the current destination
+            {
+                playerPosition.X += 2 * Math.Sign(playerNewPosition.X - playerPosition.X);
+                playerPosition.Y += Math.Sign(playerNewPosition.Y - playerPosition.Y);
+            }
+
+            /*
             if (playerPosition != playerNewPosition)
             {
                 if (playerNewPosition.X - playerPosition.X < 1)
@@ -103,7 +116,9 @@ namespace TheColony
                     playerPosition.Y = playerPosition.Y - 1;
                 else if (playerNewPosition.Y - playerPosition.Y > 1)
                     playerPosition.Y = playerPosition.Y + 1;
-            }
+                if (playerNewPosition.X - playerPosition.X <= 1 && playerNewPosition.X - playerPosition.X >= -1)
+                    playerPosition.X = playerNewPosition.X;
+            }*/
 
 
             //lastKeyboardState = currentKeyboardState;
@@ -124,10 +139,10 @@ namespace TheColony
 
             game.GraphicsDevice.Viewport = gameView;
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.getTransformation(game.GraphicsDevice));
-            spriteBatch.Draw(background, new Vector2(0, 0), Color.White);
+            spriteBatch.Draw(large_background, new Vector2(-large_background.Width/2, -large_background.Height/2), Color.White);
             spriteBatch.End();
             spriteBatch.Begin();
-            //spriteBatch.Draw(player_temp, playerPosition, Color.White);
+            spriteBatch.Draw(player_temp, playerPosition, Color.White);
             spriteBatch.End();
             
             game.GraphicsDevice.Viewport = defaultView;
