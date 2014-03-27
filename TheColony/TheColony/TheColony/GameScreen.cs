@@ -95,13 +95,16 @@ namespace TheColony
                 playerNewPosition = playerNewPosition - playerOffset;
             }
 
-            if (Math.Abs(playerPosition.X - playerNewPosition.X) < 3 && playerPosition.Y - playerNewPosition.Y != 0)
+            if (Math.Abs(playerPosition.X - playerNewPosition.X) < 2)
             {     // the player is already near his destination
                 playerPosition.X = playerNewPosition.X;
             }
-            else  // move the player toward the current destination
+            if (Math.Abs(playerPosition.X - playerNewPosition.X) > 2)//move the player toward current destination
             {
-                playerPosition.X += 2 * Math.Sign(playerNewPosition.X - playerPosition.X);
+                playerPosition.X += 2 * Math.Sign(playerNewPosition.X - playerPosition.X);   
+            }
+            if (Math.Abs(playerPosition.Y - playerNewPosition.Y) != 0)// move the player toward the current destination
+            {
                 playerPosition.Y += Math.Sign(playerNewPosition.Y - playerPosition.Y);
             }
 
