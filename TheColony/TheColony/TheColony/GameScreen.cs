@@ -95,7 +95,7 @@ namespace TheColony
                 playerNewPosition = playerNewPosition - playerOffset;
             }
 
-            if (Math.Abs(playerPosition.X - playerNewPosition.X) < 3 && playerPosition.Y - playerNewPosition.Y != 0)
+            /*if (Math.Abs(playerPosition.X - playerNewPosition.X) < 3 && playerPosition.Y - playerNewPosition.Y != 0)
             {     // the player is already near his destination
                 playerPosition.X = playerNewPosition.X;
             }
@@ -103,6 +103,15 @@ namespace TheColony
             {
                 playerPosition.X += 2 * Math.Sign(playerNewPosition.X - playerPosition.X);
                 playerPosition.Y += Math.Sign(playerNewPosition.Y - playerPosition.Y);
+            }*/
+
+            Vector2 playerDirection = playerNewPosition - playerPosition;
+            if (playerDirection.LengthSquared() < 9)
+                playerPosition = playerNewPosition;
+            else
+            {
+                playerDirection.Normalize();
+                playerPosition += playerDirection * 2;
             }
 
             /*
