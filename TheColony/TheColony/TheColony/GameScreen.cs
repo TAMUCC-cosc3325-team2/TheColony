@@ -15,7 +15,10 @@ namespace TheColony
         private MouseState lastMouseState;
         private Texture2D tHud;
         private Texture2D player_temp;
-        private Texture2D large_background;
+        private Texture2D background0;
+        private Texture2D background1;
+        private Texture2D background2;
+        private Texture2D background3;
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -50,7 +53,10 @@ namespace TheColony
             player_temp = game.Content.Load<Texture2D>("radSprite_temp");       //temporary sprite to test movement
             cursor = game.Content.Load<Texture2D>("Pointer");                   //sprite for cursor
             background = game.Content.Load<Texture2D>("background");            //image for background
-            large_background = game.Content.Load<Texture2D>("Game_Background"); //temporary background cuz it looks better
+            background0 = game.Content.Load<Texture2D>("background0"); //larger, better looking background
+            background1 = game.Content.Load<Texture2D>("background1"); //larger, better looking background
+            background2 = game.Content.Load<Texture2D>("background2"); //larger, better looking background
+            background3 = game.Content.Load<Texture2D>("background3"); //larger, better looking background
             
             //currently not used but will probably be eventually
             lastKeyboardState = Keyboard.GetState();
@@ -80,7 +86,7 @@ namespace TheColony
                 MathHelper.PiOver4, 2.0f / 3.0f, 1.0f, 10000f);
 
             characterList = new List<Character>();
-            addCharacters();        //Adds characters to the game(unfinished
+            addCharacters();        //Adds characters to the game(unfinished)
         }
 
         public void Update()
@@ -95,9 +101,9 @@ namespace TheColony
             if (key.IsKeyDown(Keys.Escape))
                 game.Exit();
 
-            //allows to toggle fullscreen
-            if (key.IsKeyDown(Keys.F))
-                graphics.ToggleFullScreen();
+            //allows to toggle fullscreen       **will crash. Probably a problem with the camera...maybe
+            //if (key.IsKeyDown(Keys.F))
+            //    graphics.ToggleFullScreen();
 
             //moves camera when cursor is near edge of camera's viewport
             if (mouse.X < 50)
@@ -168,7 +174,21 @@ namespace TheColony
             //camera's viewport, the game world is displayed here
             game.GraphicsDevice.Viewport = gameView;
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.getTransformation(game.GraphicsDevice));
-            spriteBatch.Draw(large_background, new Vector2(-large_background.Width/2, -large_background.Height/2), Color.White);
+            //background0-background3 don't look like shit
+            //                                           ______________ ______________
+            //                                          |              |              |
+            //                                          | background0  |  background1 |
+            //backgrounds are displayed in this order:  |______________|______________|
+            //                                          |              |              |
+            //                                          | background2  |  background3 |
+            //                                          |______________|______________|   
+            //
+            spriteBatch.Draw(background0, new Vector2(-background0.Width, -background0.Height), Color.White);
+            spriteBatch.Draw(background1, new Vector2(0, -background1.Height), Color.White);
+            spriteBatch.Draw(background2, new Vector2(-background2.Width, 0), Color.White);
+            spriteBatch.Draw(background3, new Vector2(0, 0), Color.White);
+            //background looks like shit
+            //spriteBatch.Draw(background, new Vector2(-background.Width / 2, -background.Height / 2), Color.White);
             spriteBatch.End();
             spriteBatch.Begin();
             spriteBatch.Draw(player_temp, playerPosition, Color.White);
