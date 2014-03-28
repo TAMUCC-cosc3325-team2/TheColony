@@ -27,7 +27,6 @@ namespace TheColony
         private KeyboardState key;
         private MouseState mouse;
 
-        private Texture2D radSprite;
         private Texture2D background;
         private Texture2D cursor;
         //private SpriteFont fHud;
@@ -37,6 +36,9 @@ namespace TheColony
         private Vector2 playerOffset;
         private Vector2 playerNewPosition;
         private Matrix isoProjectionMatrix;
+
+        //NOTE: Possibly make a Characters class that has all our character objects instead of using a list
+        //it would basically function like a list but can include any needed 
         private List<Character> characterList;
         
         public GameScreen(Game1 game)
@@ -47,7 +49,6 @@ namespace TheColony
             tHud = game.Content.Load<Texture2D>("gameHUD");
             player_temp = game.Content.Load<Texture2D>("radSprite_temp");       //temporary sprite to test movement
             cursor = game.Content.Load<Texture2D>("Pointer");                   //sprite for cursor
-            radSprite = game.Content.Load<Texture2D>("radSprite");              //radiation sprite sheet(unused currently)
             background = game.Content.Load<Texture2D>("background");            //image for background
             large_background = game.Content.Load<Texture2D>("Game_Background"); //temporary background cuz it looks better
             
@@ -78,7 +79,8 @@ namespace TheColony
             isoProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
                 MathHelper.PiOver4, 2.0f / 3.0f, 1.0f, 10000f);
 
-            //addCharacters();        //Adds characters to the game(unfinished
+            characterList = new List<Character>();
+            addCharacters();        //Adds characters to the game(unfinished
         }
 
         public void Update()
@@ -117,7 +119,7 @@ namespace TheColony
                 }
             }
 
-            //player movement, tobe moved later
+            //player movement, will probably change soon
             if (Math.Abs(playerPosition.X - playerNewPosition.X) < 2)
             {     // the player is already near his destination
                 playerPosition.X = playerNewPosition.X;
@@ -151,7 +153,7 @@ namespace TheColony
             //lastMouseState = currentMouseState;
         }
 
-        public void Draw()//SpriteBatch spriteBatch)
+        public void Draw()
         {
             //default viewport, the hud is displayed here
             game.GraphicsDevice.Viewport = defaultView;
@@ -184,57 +186,15 @@ namespace TheColony
         //method to add characters to the game
         private void addCharacters()
         {
-            //Examples of how to add characters. Info was pulled from trello
-            Character Samantha = new Character();
-            Samantha.name = "Samantha";
-            Samantha.age = 34;
-            Samantha.birthPlace = "Seward, AK";
-            Samantha.occupation = "Teacher";
-            Samantha.education = "Bachelor of Science in Education";
-            Samantha.backstory = "Having grown up the oldest in a large family Samantha loved being around children. " +
-            "Samantha was a great elementary school teacher and spent all her extra time helping underprivileged kids. " +
-            "After the event Samantha has been helping the children.";
-            Samantha.health = 100;
-            Samantha.damage = 0;
-            Samantha.dealsDamage = false;
-            Samantha.isUnconscious = false;
-            Samantha.isAvailable = true;
-            characterList.Add(Samantha);
+            characterList.Clear();      //empties list
 
-            Character Richard_B = new Character();
-            Richard_B.name = "Richard Blase";
-            Richard_B.age = 34;
-            Richard_B.birthPlace = "Erie, PA";
-            Richard_B.occupation = "Carpenter";
-            Richard_B.education = "High School Diploma";
-            Richard_B.backstory = "After losing his family to a car accident, Richard gave up on his life long love of carpentry. " +
-            "He walked away from all family and friends taking up a life of solitude. " +
-            "After the event Richard has been securing shelters to defend against thieves and Murders.";
-            Richard_B.health = 100;
-            Richard_B.damage = 0;
-            Richard_B.dealsDamage = false;
-            Richard_B.isUnconscious = false;
-            Richard_B.isAvailable = true;
-            characterList.Add(Richard_B);
+            //Examples of how to add characters.
+            characterList.Add(new Samantha(game));           
+            characterList.Add(new Richard_Blase(game));
+            characterList.Add(new Leroy_Jenkins(game));
 
-            Character Leroy_J = new Character();
-            Leroy_J.name = "Leroy Jenkins";
-            Leroy_J.age = 20;
-            Leroy_J.birthPlace = "Flag Staff, AR";
-            Leroy_J.occupation = "Athlete";
-            Leroy_J.education = "Unknown";
-            Leroy_J.backstory = "Leroy, was a very good athlete with a bright future ahead of him but one unfortunate " +
-            "injury took his career away from him while he was getting ready to join the Olympic Games. " +
-            "He is now trying to prove the world that he is fully recovered and training even harder than before. " +
-            "His athletic body and good health is what keeps him get out of tough situations.";
-            Leroy_J.health = 100;
-            Leroy_J.damage = 0;
-            Leroy_J.dealsDamage = false;
-            Leroy_J.isUnconscious = false;
-            Leroy_J.isAvailable = true;
-            characterList.Add(Leroy_J);
-
-            //Still more characters to add, but can do that later. 
+            //Still more characters to add, but can do that later.
+            //Possibly get character info from a .dat file
         }
     }
 }
