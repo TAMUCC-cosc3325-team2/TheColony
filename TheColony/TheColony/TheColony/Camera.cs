@@ -34,12 +34,11 @@ namespace TheColony
             transformation =
                 Matrix.CreateTranslation(new Vector3(-position.X, -position.Y, 0)) *
                                                 Matrix.CreateRotationZ(MathHelper.ToRadians(45)) *      //rotate 45 degrees
-                                                Matrix.CreateScale(new Vector3(1.0f, 0.5f, 1.0f)) *     //scale vertical by 50%
+                                                Matrix.CreateScale(new Vector3(1.0f, 0.5f, 1.0f)) *     //scale vertical by 63%
                                                 Matrix.CreateTranslation(new Vector3(viewport.Width * 0.5f, viewport.Height * 0.5f, 0));
 
             return transformation;
         }
-
 
         //Will eventually convert mouse clicks into world coordinates
         //Untested and currently unused

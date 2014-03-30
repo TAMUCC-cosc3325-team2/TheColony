@@ -19,6 +19,9 @@ namespace TheColony
         private Texture2D background1;
         private Texture2D background2;
         private Texture2D background3;
+        private Texture2D background;
+        private Texture2D cursor;
+        private SpriteFont debugFont;
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -30,8 +33,7 @@ namespace TheColony
         private KeyboardState key;
         private MouseState mouse;
 
-        private Texture2D background;
-        private Texture2D cursor;
+
         //private SpriteFont fHud;
 
         private Vector2 mousePosition;
@@ -57,6 +59,7 @@ namespace TheColony
             background1 = game.Content.Load<Texture2D>("background1"); //larger, better looking background
             background2 = game.Content.Load<Texture2D>("background2"); //larger, better looking background
             background3 = game.Content.Load<Texture2D>("background3"); //larger, better looking background
+            debugFont = game.Content.Load<SpriteFont>("DebugFont");
             
             //currently not used but will probably be eventually
             lastKeyboardState = Keyboard.GetState();
@@ -183,6 +186,8 @@ namespace TheColony
             //                                          | background2  |  background3 |
             //                                          |______________|______________|   
             //
+            //Each background image is 4096x4096, making this a 8192x8192 world. 
+            //
             spriteBatch.Draw(background0, new Vector2(-background0.Width, -background0.Height), Color.White);
             spriteBatch.Draw(background1, new Vector2(0, -background1.Height), Color.White);
             spriteBatch.Draw(background2, new Vector2(-background2.Width, 0), Color.White);
@@ -191,12 +196,16 @@ namespace TheColony
             //spriteBatch.Draw(background, new Vector2(-background.Width / 2, -background.Height / 2), Color.White);
             spriteBatch.End();
             spriteBatch.Begin();
-            spriteBatch.Draw(player_temp, playerPosition, Color.White);
+            spriteBatch.Draw(player_temp, Vector2.Transform(playerPosition, camera.getTransformation(game.GraphicsDevice)), Color.White);
             spriteBatch.End();
             
             //back to default viewport to draw cursor on top of everything
             game.GraphicsDevice.Viewport = defaultView;
             spriteBatch.Begin();
+            spriteBatch.DrawString(debugFont, "Mouse Position: " + mouse.ToString(), new Vector2(0, 0), Color.Red);
+            spriteBatch.DrawString(debugFont, "Mouse's World Position: " + Vector2.Transform(playerPosition, camera.getTransformation(game.GraphicsDevice)), new Vector2(0, 12), Color.Red);
+            spriteBatch.DrawString(debugFont, "Character Position: " + playerPosition.ToString(), new Vector2(0, 24), Color.Red);
+
             spriteBatch.Draw(cursor, mousePosition, Color.White);
             spriteBatch.End();
             
