@@ -109,6 +109,7 @@ namespace TheColony
             //    graphics.ToggleFullScreen();
 
             //moves camera when cursor is near edge of camera's viewport
+            #region pan cursor
             if (mouse.X < 50)
                 camera.Pan(new Vector2(-1, 1));
             if (mouse.X > game.GraphicsDevice.DisplayMode.Width - 166 - 50 && mouse.X < game.GraphicsDevice.DisplayMode.Width - 166)
@@ -117,6 +118,7 @@ namespace TheColony
                 camera.Pan(new Vector2(-1, -1));
             if (mouse.Y > game.GraphicsDevice.DisplayMode.Height - 50 && mouse.X < game.GraphicsDevice.DisplayMode.Width - 166)
                 camera.Pan(new Vector2(1, 1));
+            #endregion 
 
             //gets left mouse click and updates player position
             if (mouse.LeftButton == ButtonState.Pressed)
@@ -151,45 +153,48 @@ namespace TheColony
             game.GraphicsDevice.Viewport = defaultView;
             game.GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
+            #region draw hud
             spriteBatch.Draw(tHud, new Rectangle(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 166, 0, 166, 768), Color.White);
-            //spriteBatch.DrawString(hud, "PUT", new Vector2(GraphicsDevice.DisplayMode.Width - 250, GraphicsDevice.DisplayMode.Height / 2 - 140), Color.White);
-            //spriteBatch.DrawString(hud, "HUD", new Vector2(GraphicsDevice.DisplayMode.Width - 250, GraphicsDevice.DisplayMode.Height / 2 - 70), Color.White);
-            //spriteBatch.DrawString(hud, "HERE", new Vector2(GraphicsDevice.DisplayMode.Width - 250, GraphicsDevice.DisplayMode.Height / 2), Color.White);
+            #endregion
             spriteBatch.End();
 
             //camera's viewport, the game world is displayed here
             game.GraphicsDevice.Viewport = gameView;
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.getTransformation(game.GraphicsDevice));
-            //background0-background3 don't look like shit
+            #region draw background
+
             //                                           ______________ ______________
             //                                          |              |              |
             //                                          | background0  |  background1 |
             //backgrounds are displayed in this order:  |______________|______________|
-            //                                          |              |              |
-            //                                          | background2  |  background3 |
-            //                                          |______________|______________|   
-            //
-            //Each background image is 4096x4096, making this a 8192x8192 world. 
+            //Each background is 4096x4096              |              |              |
+            //Total the world is 8192x8192              | background2  |  background3 |
+            //                                          |______________|______________|
             //
             spriteBatch.Draw(background0, new Vector2(-background0.Width, -background0.Height), Color.White);
             spriteBatch.Draw(background1, new Vector2(0, -background1.Height), Color.White);
             spriteBatch.Draw(background2, new Vector2(-background2.Width, 0), Color.White);
             spriteBatch.Draw(background3, new Vector2(0, 0), Color.White);
-            //background looks like shit
             //spriteBatch.Draw(background, new Vector2(-background.Width / 2, -background.Height / 2), Color.White);
+            #endregion
             spriteBatch.End();
             spriteBatch.Begin();
+            #region draw player
             spriteBatch.Draw(player_temp, Vector2.Transform(playerPosition, camera.getTransformation(game.GraphicsDevice)), Color.White);
+            #endregion
             spriteBatch.End();
             
             //back to default viewport to draw cursor on top of everything
             game.GraphicsDevice.Viewport = defaultView;
             spriteBatch.Begin();
+            #region draw debug info
             spriteBatch.DrawString(debugFont, "Mouse Position: " + mouse.ToString(), new Vector2(0, 0), Color.Red);
             spriteBatch.DrawString(debugFont, "Mouse's World Position: " + Vector2.Transform(playerPosition, camera.getTransformation(game.GraphicsDevice)), new Vector2(0, 12), Color.Red);
             spriteBatch.DrawString(debugFont, "Character Position: " + playerPosition.ToString(), new Vector2(0, 24), Color.Red);
-
+            #endregion 
+            #region draw cursor
             spriteBatch.Draw(cursor, mousePosition, Color.White);
+            #endregion
             spriteBatch.End();
             
         }
