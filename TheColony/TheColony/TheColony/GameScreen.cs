@@ -80,8 +80,8 @@ namespace TheColony
             #region temporary player attributes just to test player movement 
             playerPosition = new Vector2(700,600);
             playerNewPosition = playerPosition;
-            playerOffset = new Vector2(player_temp.Width / 2, player_temp.Height - 10);
-            playerPosition -= playerOffset;
+            playerOffset = new Vector2(-32, -145);
+            //playerPosition -= playerOffset;
             #endregion 
 
             //projection Matrix used for uh... I forgot. Will probably remove soon
@@ -123,39 +123,22 @@ namespace TheColony
             {
                 if (mouse.X < game.GraphicsDevice.DisplayMode.Width - 166)
                 {
-                    playerNewPosition = mousePosition;
-                    playerNewPosition = playerNewPosition - playerOffset;
+                    playerNewPosition = Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)));
+                    playerNewPosition = playerNewPosition + playerOffset;
                 }
             }
 
-            //player movement, will probably change soon
-            if (Math.Abs(playerPosition.X - playerNewPosition.X) < 2)
-            {     // the player is already near his destination
-                playerPosition.X = playerNewPosition.X;
-            }
-            if (Math.Abs(playerPosition.X - playerNewPosition.X) > 2)//move the player toward current destination
-            {
-                playerPosition.X += 2 * Math.Sign(playerNewPosition.X - playerPosition.X);   
-            }
-            if (Math.Abs(playerPosition.Y - playerNewPosition.Y) != 0)// move the player toward the current destination
-            {
-                playerPosition.Y += Math.Sign(playerNewPosition.Y - playerPosition.Y);
-            }
 
-            /* old player movement
-            if (playerPosition != playerNewPosition)
+            //old player movement
+            if ((playerPosition - playerNewPosition).LengthSquared() > 25)
             {
-                if (playerNewPosition.X - playerPosition.X < 1)
-                    playerPosition.X = playerPosition.X - 2;
-                else if (playerNewPosition.X - playerPosition.X > 1)
-                    playerPosition.X = playerPosition.X + 2;
-                if (playerNewPosition.Y - playerPosition.Y < 1)
-                    playerPosition.Y = playerPosition.Y - 1;
-                else if (playerNewPosition.Y - playerPosition.Y > 1)
-                    playerPosition.Y = playerPosition.Y + 1;
-                if (playerNewPosition.X - playerPosition.X <= 1 && playerNewPosition.X - playerPosition.X >= -1)
-                    playerPosition.X = playerNewPosition.X;
-            }*/
+                Vector2 n = new Vector2();
+                n = (playerNewPosition - playerPosition);
+                n.Normalize();
+                playerPosition += n * 4.5f;
+            }
+            else
+                playerPosition = playerNewPosition;
 
 
             //lastKeyboardState = currentKeyboardState;
