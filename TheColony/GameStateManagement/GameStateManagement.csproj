@@ -92,7 +92,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameScreen.cs" />
+    <Compile Include="Screen.cs" />
     <Compile Include="InputState.cs" />
     <Compile Include="ScreenManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
