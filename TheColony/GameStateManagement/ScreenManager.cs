@@ -20,32 +20,41 @@ namespace GameStateManagement
         //monitors player input
         public InputState input = new InputState();
 
-        SpriteBatch spriteBatch;
-        SpriteFont font;
-        Texture2D blankTexture;
-
+        public Game game;
         bool isInitialized;
 
-        //SpriteBatch is shared by all the screens
+        #region SpriteBatch is shared by all the screens
+        
+        SpriteBatch spriteBatch;
+        
         public SpriteBatch SpriteBatch
         {
             get { return spriteBatch; }
         }
 
-        //SpriteFont shared by all the screens
-        public SpriteFont Font
+        #endregion
+
+        #region SpriteFonts shared by all menu screens
+
+        SpriteFont headerFont;
+        SpriteFont textFont;
+        
+        public SpriteFont HeaderFont
         {
-            get { return font; }
+            get { return headerFont; }
+        }
+        public SpriteFont TextFont
+        {
+            get { return textFont; }
         }
 
-        //blank texture that can be used by screens
-        public Texture2D BlankTexture
-        {
-            get { return blankTexture; }
-        }
+        #endregion
 
         //constructor
-        public ScreenManager(Game game) : base(game) { }
+        public ScreenManager(Game game) : base(game)
+        {
+            this.game = game;        
+        }
 
         public override void Initialize()
         {
@@ -59,8 +68,8 @@ namespace GameStateManagement
             ContentManager content = Game.Content;
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            font = content.Load<SpriteFont>("menufont");
-            blankTexture = content.Load<Texture2D>("blank");
+            headerFont = content.Load<SpriteFont>("headerFont");
+            textFont = content.Load<SpriteFont>("textFont");
 
             //load each screen's content
             foreach (Screen screen in screens)
@@ -80,7 +89,7 @@ namespace GameStateManagement
 
         public override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape) == true) { Game.Exit(); }
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape) == true) { game.Exit(); }
 
             //read the keyboard
             input.Update();
@@ -129,7 +138,8 @@ namespace GameStateManagement
             }
         }
 
-        //add a new screen
+        #region add/remove screens
+        
         public void AddScreen(Screen screen)
         {
             screen.ScreenManager = this;
@@ -144,7 +154,6 @@ namespace GameStateManagement
             screen.ScreenManager = this;
         }
 
-        //remove a screen
         public void RemoveScreen(Screen screen)
         {
             //unload content
@@ -156,11 +165,7 @@ namespace GameStateManagement
             screens.Remove(screen);
             tempScreensList.Remove(screen);
         }
-
-        ////return array copy of screens, for testing/debuggin
-        //public GameScreen[] GetScreens()
-        //{
-        //    return screens.ToArray();
-        //}
+        
+        #endregion
     }
 }

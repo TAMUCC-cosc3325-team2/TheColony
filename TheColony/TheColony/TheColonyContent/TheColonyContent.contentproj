@@ -63,8 +63,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MenuScreenFont.spritefont">
-      <Name>MenuScreenFont</Name>
+    <Compile Include="headerFont.spritefont">
+      <Name>headerFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
@@ -135,6 +135,13 @@
   <ItemGroup>
     <Compile Include="SpriteFont1.spritefont">
       <Name>DebugFont</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="textFont.spritefont">
+      <Name>textFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>

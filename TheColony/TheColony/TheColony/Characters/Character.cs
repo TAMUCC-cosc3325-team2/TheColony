@@ -33,7 +33,7 @@ namespace TheColony
 
         #endregion
 
-        public Character(Game1 game)
+        public Character(Game game)
             : base(game)
         { 
         

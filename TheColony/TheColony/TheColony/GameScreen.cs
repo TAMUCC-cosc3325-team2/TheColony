@@ -5,13 +5,14 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using GameStateManagement;
 
 namespace TheColony
 {
-    public class GameScreen
+    public class GameScreen : Screen
     {
-        private Game1 game;
-        private KeyboardState lastKeyboardState;
+        private Game game;
+        //private KeyboardState lastKeyboardState;
         private MouseState lastMouseState;
         private Texture2D tHud;
         private Texture2D player_temp;
@@ -30,7 +31,7 @@ namespace TheColony
         private Viewport gameView;
         private Camera camera;
 
-        private KeyboardState key;
+        //private KeyboardState key;
         private MouseState mouse;
 
 
@@ -45,11 +46,16 @@ namespace TheColony
         //NOTE: Possibly make a Characters class that has all our character objects instead of using a list
         //it would basically function like a list but can include any needed 
         private List<Character> characterList;
-        
-        public GameScreen(Game1 game)
-        {
-            this.game = game;
 
+        public GameScreen()
+        {
+
+        }
+
+        public override void Activate()
+        {
+            game = ScreenManager.game;
+            spriteBatch = ScreenManager.SpriteBatch;
             //load textures to be used in game
             tHud = game.Content.Load<Texture2D>("gameHUD");
             player_temp = game.Content.Load<Texture2D>("radSprite_temp");       //temporary sprite to test movement
@@ -62,13 +68,12 @@ namespace TheColony
             debugFont = game.Content.Load<SpriteFont>("DebugFont");
             
             //currently not used but will probably be eventually
-            lastKeyboardState = Keyboard.GetState();
+            //lastKeyboardState = Keyboard.GetState();
             //currently not used but will probably be eventually
             lastMouseState = Mouse.GetState();
 
             camera = new Camera();          
-            spriteBatch = new SpriteBatch(game.GraphicsDevice);
-
+            
             //different viewports
             defaultView = game.GraphicsDevice.Viewport;
             gameView = defaultView;
@@ -92,17 +97,21 @@ namespace TheColony
             addCharacters();        //Adds characters to the game(unfinished)
         }
 
-        public void Update()
+        public override void Unload() { }
+
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             
-            key = Keyboard.GetState();
+            //key = Keyboard.GetState();
             mouse = Mouse.GetState();
 
             mousePosition = new Vector2(mouse.X, mouse.Y);
 
             //allows game to exit
-            if (key.IsKeyDown(Keys.Escape))
+            if (ScreenManager.input.IsNewKeyPress(Keys.Escape))
+            {
                 game.Exit();
+            }
 
             //allows to toggle fullscreen       **will crash. Probably a problem with the camera...maybe
             //if (key.IsKeyDown(Keys.F))
@@ -145,9 +154,10 @@ namespace TheColony
 
             //lastKeyboardState = currentKeyboardState;
             //lastMouseState = currentMouseState;
+            base.Update(gameTime, otherScreenHasFocus, false);
         }
 
-        public void Draw()
+        public override void Draw(GameTime gameTime)
         {
             //default viewport, the hud is displayed here
             game.GraphicsDevice.Viewport = defaultView;

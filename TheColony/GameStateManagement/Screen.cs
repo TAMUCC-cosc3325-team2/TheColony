@@ -6,12 +6,15 @@ using Microsoft.Xna.Framework;
 
 namespace GameStateManagement
 {
-    //enumerates screen states
+    #region screen states enumeration
+
     public enum ScreenState
     {
         Active,
         Hidden,
     }
+
+    #endregion
 
     public abstract class Screen
     {
@@ -86,11 +89,5 @@ namespace GameStateManagement
         public virtual void HandleInput(GameTime gameTime, InputState input) { }
 
         public virtual void Draw(GameTime gameTime) { }
-        
-        ////removes screen
-        //public void ExitScreen()
-        //{
-        //    ScreenManager.RemoveScreen(this);
-        //}
     }
 }
