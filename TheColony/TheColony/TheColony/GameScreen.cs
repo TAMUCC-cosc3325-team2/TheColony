@@ -40,10 +40,12 @@ namespace TheColony
         private Vector2 playerPosition;
         private Vector2 playerOffset;
         private Vector2 playerNewPosition;
-        private Matrix isoProjectionMatrix;
+
+        private int TILE_WIDTH;
+        private int TILE_HEIGHT;
 
         //NOTE: Possibly make a Characters class that has all our character objects instead of using a list
-        //it would basically function like a list but can include any needed 
+        //it would basically function like a list but can include any needed methods
         private List<Character> characterList;
         
         public GameScreen(Game1 game)
@@ -51,31 +53,32 @@ namespace TheColony
             this.game = game;
 
             //load textures to be used in game
-            tHud = game.Content.Load<Texture2D>("gameHUD");
-            player_temp = game.Content.Load<Texture2D>("radSprite_temp");       //temporary sprite to test movement
-            cursor = game.Content.Load<Texture2D>("Pointer");                   //sprite for cursor
-            background = game.Content.Load<Texture2D>("background");            //image for background
-            background0 = game.Content.Load<Texture2D>("background0"); //larger, better looking background
-            background1 = game.Content.Load<Texture2D>("background1"); //larger, better looking background
-            background2 = game.Content.Load<Texture2D>("background2"); //larger, better looking background
-            background3 = game.Content.Load<Texture2D>("background3"); //larger, better looking background
-            debugFont = game.Content.Load<SpriteFont>("DebugFont");
+            tHud = game.Content.Load<Texture2D>(@"UI\gameHUD");
+            player_temp = game.Content.Load<Texture2D>(@"Sprite\radSprite_temp");   //temporary sprite to test movement
+            cursor = game.Content.Load<Texture2D>(@"UI\Pointer");                   //sprite for cursor
+            background = game.Content.Load<Texture2D>(@"Background\background");    //image for background
+            background0 = game.Content.Load<Texture2D>(@"Background\background0");  //larger, better looking background
+            background1 = game.Content.Load<Texture2D>(@"Background\background1");  //larger, better looking background
+            background2 = game.Content.Load<Texture2D>(@"Background\background2");  //larger, better looking background
+            background3 = game.Content.Load<Texture2D>(@"Background\background3");  //larger, better looking background
+            debugFont = game.Content.Load<SpriteFont>(@"Font\DebugFont");           //font for debug info
             
-            //currently not used but will probably be eventually
+            //currently not used but will probably be used eventually
             lastKeyboardState = Keyboard.GetState();
-            //currently not used but will probably be eventually
+            //currently not used but will probably be used eventually
             lastMouseState = Mouse.GetState();
 
+            //camera object used for viewing game world
             camera = new Camera();          
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
 
-            //different viewports
+            //different viewports to display different game elements
             defaultView = game.GraphicsDevice.Viewport;
-            gameView = defaultView;
+            gameView = defaultView; 
             gameView.Width = gameView.Width - tHud.Width; //viewport for player's camera
-            
-            //cursor = Content.Load<Texture2D>("cursor");
-            //fHud = game.Content.Load<SpriteFont>("HudFont");
+
+            TILE_HEIGHT = 200;
+            TILE_WIDTH = 200;
 
             #region temporary player attributes just to test player movement 
             playerPosition = new Vector2(700,600);
@@ -83,10 +86,6 @@ namespace TheColony
             playerOffset = new Vector2(-32, -145);
             //playerPosition -= playerOffset;
             #endregion 
-
-            //projection Matrix used for uh... I forgot. Will probably remove soon
-            isoProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.PiOver4, 2.0f / 3.0f, 1.0f, 10000f);
 
             characterList = new List<Character>();
             addCharacters();        //Adds characters to the game(unfinished)
@@ -112,26 +111,23 @@ namespace TheColony
             #region pan cursor
             if (mouse.X < 50)
                 camera.Pan(new Vector2(-1, 1));
-            if (mouse.X > game.GraphicsDevice.DisplayMode.Width - 166 - 50 && mouse.X < game.GraphicsDevice.DisplayMode.Width - 166)
+            else if (mouse.X > gameView.Width - 50 && mouse.X < gameView.Width)
                 camera.Pan(new Vector2(1, -1));
-            if (mouse.Y < 50 && mouse.X < game.GraphicsDevice.DisplayMode.Width - 166)
+            if (mouse.Y < 50 && mouse.X < gameView.Width)
                 camera.Pan(new Vector2(-1, -1));
-            if (mouse.Y > game.GraphicsDevice.DisplayMode.Height - 50 && mouse.X < game.GraphicsDevice.DisplayMode.Width - 166)
+            else if (mouse.Y > gameView.Height - 50 && mouse.X < gameView.Width)
                 camera.Pan(new Vector2(1, 1));
             #endregion 
 
             //gets left mouse click and updates player position
-            if (mouse.LeftButton == ButtonState.Pressed)
+            if (mouse.LeftButton == ButtonState.Pressed && mouse.X < gameView.Width)
             {
-                if (mouse.X < game.GraphicsDevice.DisplayMode.Width - 166)
-                {
-                    playerNewPosition = Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)));
-                    playerNewPosition = playerNewPosition + playerOffset;
-                }
+                playerNewPosition = Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)));
+                playerNewPosition = playerNewPosition + playerOffset;
             }
 
 
-            //old player movement
+            //player movement
             if ((playerPosition - playerNewPosition).LengthSquared() > 25)
             {
                 Vector2 n = new Vector2();
@@ -185,12 +181,15 @@ namespace TheColony
             spriteBatch.End();
             
             //back to default viewport to draw cursor on top of everything
+            //debug info is also drawn here
             game.GraphicsDevice.Viewport = defaultView;
             spriteBatch.Begin();
             #region draw debug info
             spriteBatch.DrawString(debugFont, "Mouse Position: " + mouse.ToString(), new Vector2(0, 0), Color.Red);
-            spriteBatch.DrawString(debugFont, "Mouse's World Position: " + Vector2.Transform(playerPosition, camera.getTransformation(game.GraphicsDevice)), new Vector2(0, 12), Color.Red);
-            spriteBatch.DrawString(debugFont, "Character Position: " + playerPosition.ToString(), new Vector2(0, 24), Color.Red);
+            spriteBatch.DrawString(debugFont, "Mouse's World Position: " + Vector2.Transform(mousePosition, camera.getTransformation(game.GraphicsDevice)), new Vector2(0, 12), Color.Red);
+            spriteBatch.DrawString(debugFont, "Character Position: " + playerPosition, new Vector2(0, 24), Color.Red);
+            spriteBatch.DrawString(debugFont, "Tile #: " + tileEngine(mousePosition), new Vector2(0, 36), Color.Red);
+            //spriteBatch.DrawString(debugFont, "TileStartPos: " + Vector2.Transform(new Vector2(737, 1991), camera.getTransformation(game.GraphicsDevice)), new Vector2(0, 36), Color.Red);
             #endregion 
             #region draw cursor
             spriteBatch.Draw(cursor, mousePosition, Color.White);
@@ -206,12 +205,21 @@ namespace TheColony
             characterList.Clear();      //empties list
 
             //Examples of how to add characters.
-            characterList.Add(new Samantha(game));           
+            characterList.Add(new Samantha(game));
             characterList.Add(new Richard_Blase(game));
             characterList.Add(new Leroy_Jenkins(game));
 
             //Still more characters to add, but can do that later.
             //Possibly get character info from a .dat file
+        }
+
+
+        //Temporary "tile engine"
+        //unfinished
+        //don't judge me
+        private Vector2 tileEngine(Vector2 position)
+        {
+            return new Vector2((int)(position.X / TILE_WIDTH), (int)(position.Y / TILE_HEIGHT));
         }
     }
 }

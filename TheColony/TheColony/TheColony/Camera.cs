@@ -26,6 +26,9 @@ namespace TheColony
         }
 
         //Used for the game world's viewport to make the square 2D background image appear isometric
+        //First it takes the square background and rotates it by 45 degrees, 
+        //then it scales the now diamond shaped image vertically to 63%.
+        //This allows for the square image to be viewed from an isometric perspective 
         public Matrix getTransformation(GraphicsDevice graphicsDevice)
         {
             Viewport viewport = graphicsDevice.Viewport;

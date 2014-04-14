@@ -74,9 +74,9 @@ namespace TheColony
             spriteBatch = new SpriteBatch(GraphicsDevice);
             
             //load custom cursor
-            cursorTexture = Content.Load<Texture2D>("Pointer");
+            cursorTexture = Content.Load<Texture2D>(@"UI\Pointer");
             //load button font
-            buttonFont = Content.Load<SpriteFont>("ButtonSpriteFont");
+            buttonFont = Content.Load<SpriteFont>(@"Font\ButtonSpriteFont");
         }
 
         protected override void UnloadContent()

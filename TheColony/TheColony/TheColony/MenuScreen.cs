@@ -28,13 +28,13 @@ namespace TheColony
         {
             this.game = game;
             //load background
-            bg = game.Content.Load<Texture2D>("GameMenu");
-            button = game.Content.Load<Texture2D>("GameMenuButton1");
+            bg = game.Content.Load<Texture2D>(@"Background\GameMenu");
+            button = game.Content.Load<Texture2D>(@"UI\GameMenuButton1");
             //load font
-            menuScreenFont = game.Content.Load<SpriteFont>("MenuScreenFont");
+            menuScreenFont = game.Content.Load<SpriteFont>(@"Font\MenuScreenFont");
             lastKeyboardState = Keyboard.GetState();
             lastMouseState = Mouse.GetState();
-            cursorTexture = game.Content.Load<Texture2D>("Pointer");
+            cursorTexture = game.Content.Load<Texture2D>(@"UI\Pointer");
 
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
