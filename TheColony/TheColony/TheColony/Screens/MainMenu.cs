@@ -93,7 +93,7 @@ namespace TheColony
             spriteBatch.Begin();
             
             //display title
-            spriteBatch.DrawString(headerFont, header, new Vector2((((ScreenManager.GraphicsDevice.Viewport.Width - 437) - 4) / 2) + random.Next(5), (((ScreenManager.GraphicsDevice.Viewport.Height - 164) - 4) / 4) + random.Next(5)), Color.White);
+            spriteBatch.DrawString(headerFont, header, new Vector2((((ScreenManager.GraphicsDevice.Viewport.Width - 437) / 2) - 2) + random.Next(5), (((ScreenManager.GraphicsDevice.Viewport.Height / 4) - 82) - 2) + random.Next(5)), Color.White);
             
             //display menu items
             for (int i = 0; i < menuItems.Length; i++)
@@ -134,7 +134,7 @@ namespace TheColony
                 height += textFont.LineSpacing + 5;
             }
             
-            position = new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - width) / 2, ((ScreenManager.GraphicsDevice.Viewport.Height - height) * 3) / 4);
+            position = new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - width) / 2, ((ScreenManager.GraphicsDevice.Viewport.Height * 3) / 4) - (height / 2));
         }
     }
 }

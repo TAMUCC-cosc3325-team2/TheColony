@@ -45,10 +45,10 @@ namespace TheColony
             spriteBatch.Begin();
             
             //display title
-            spriteBatch.DrawString(headerFont, header, new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - headerFont.MeasureString(header).X) / 2, (ScreenManager.GraphicsDevice.Viewport.Height - headerFont.MeasureString(header).Y) / 4), Color.White);
+            spriteBatch.DrawString(headerFont, header, new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - headerFont.MeasureString(header).X) / 2, (ScreenManager.GraphicsDevice.Viewport.Height / 4) - (headerFont.MeasureString(header).Y / 2)), Color.White);
             
             //display text
-            spriteBatch.DrawString(textFont, text, new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - textFont.MeasureString(text).X) / 2, ((ScreenManager.GraphicsDevice.Viewport.Height - textFont.MeasureString(text).Y) * 3) / 4), Color.Orange);
+            spriteBatch.DrawString(textFont, text, new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - textFont.MeasureString(text).X) / 2, ((ScreenManager.GraphicsDevice.Viewport.Height * 3) / 4) - (textFont.MeasureString(text).Y / 2)), Color.Orange);
             
             spriteBatch.End();
         }

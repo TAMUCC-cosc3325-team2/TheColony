@@ -13,6 +13,7 @@ namespace TheColony
     {
         SpriteFont headerFont, textFont;
         String header = "Select Apocalypse";
+        Texture2D ScenarioBg;
 
         //menu item colors
         Color normal = Color.White;
@@ -33,7 +34,7 @@ namespace TheColony
         #region horizontal menu attributes
 
         //menu attributes
-        String[] hMenuItems = { "Scenario 1", "Scenario 2", "Scenario 3", "Scenario 4" };
+        String[] hMenuItems = { "Nuclear Warfare", "Chemical Warfare", "Biblical Apocalypse", "Natural Disaster"};
         int hSelectedIndex;
         //holds position and dimensions of menu items
         Vector2 hPosition;
@@ -50,6 +51,8 @@ namespace TheColony
             textFont = ScreenManager.TextFont;
             vMeasureMenu();
             hMeasureMenu();
+            //ScenarioBg = ScreenManager.Game.Content.Load<Texture2D>(@"Backgrounds\biblicalwarfare");
+            setScenario(0);
         }
 
         public override void Unload() { }
@@ -105,6 +108,7 @@ namespace TheColony
                 {
                     hPosition.X = hPosition.X + (hWidth * 2);
                 }
+                setScenario(hSelectedIndex);
             }
             if (ScreenManager.input.IsNewKeyPress(Keys.Right))
             {
@@ -118,6 +122,7 @@ namespace TheColony
                 {
                     hPosition.X = hPosition.X - (hWidth * 2);
                 }
+                setScenario(hSelectedIndex);
             }
             
             base.Update(gameTime, otherScreenHasFocus, false);
@@ -131,9 +136,11 @@ namespace TheColony
             Color tint;
             
             spriteBatch.Begin();
-            
+
+            spriteBatch.Draw(ScenarioBg, new Rectangle(Convert.ToInt32(viewport.Width * .25), Convert.ToInt32(viewport.Height * .25), Convert.ToInt32(viewport.Width * .5), Convert.ToInt32(viewport.Height * .5)), Color.White);
+
             //display title
-            spriteBatch.DrawString(headerFont, header, new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - headerFont.MeasureString(header).X) / 2, (ScreenManager.GraphicsDevice.Viewport.Height - headerFont.MeasureString(header).Y) / 4), Color.White);
+            spriteBatch.DrawString(headerFont, header, new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - headerFont.MeasureString(header).X) / 2, (ScreenManager.GraphicsDevice.Viewport.Height / 4) - (headerFont.MeasureString(header).Y / 2)), Color.White);
             
             //display vertical menu
             for (int i = 0; i < vMenuItems.Length; i++)
@@ -192,7 +199,7 @@ namespace TheColony
                 vHeight += textFont.LineSpacing + 5;
             }
 
-            vPosition = new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - vWidth) / 2, ((ScreenManager.GraphicsDevice.Viewport.Height - vHeight) * 3) / 4);
+            vPosition = new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - vWidth) / 2, ((ScreenManager.GraphicsDevice.Viewport.Height * 3) / 4) - (vHeight / 2));
         }
         
         #endregion
@@ -219,6 +226,25 @@ namespace TheColony
         }
 
         #endregion
+
+        private void setScenario(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    ScenarioBg = ScreenManager.Game.Content.Load<Texture2D>(@"Backgrounds\NuclearExplosion");
+                    break;
+                case 1:
+                    ScenarioBg = ScreenManager.Game.Content.Load<Texture2D>(@"Backgrounds\chemicalwarfare");
+                    break;
+                case 2:
+                    ScenarioBg = ScreenManager.Game.Content.Load<Texture2D>(@"Backgrounds\biblicalwarfare");
+                    break;
+                case 3:
+                    ScenarioBg = ScreenManager.Game.Content.Load<Texture2D>(@"Backgrounds\naturaldisaster");
+                    break;
+            }
+        }
     }
 }
 

@@ -13,6 +13,7 @@ namespace TheColony
     {
         Texture2D backgroundTexture;
 
+
         public MenuBackground() { }
 
         public override void Activate()
@@ -36,7 +37,7 @@ namespace TheColony
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(backgroundTexture, fullscreen, Color.Black);
+            spriteBatch.Draw(backgroundTexture, fullscreen, Color.Gray);
 
             spriteBatch.End();
         }
