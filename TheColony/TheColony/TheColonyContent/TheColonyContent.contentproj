@@ -63,14 +63,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Font\headerFont.spritefont">
+    <Compile Include="headerFont.spritefont">
       <Name>headerFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Font\ButtonSpriteFont.spritefont">
+    <Compile Include="ButtonSpriteFont.spritefont">
       <Name>ButtonSpriteFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
@@ -84,7 +84,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprite\radSprite.png">
+    <Compile Include="radSprite.png">
       <Name>radSprite</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -133,14 +133,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Font\SpriteFont1.spritefont">
+    <Compile Include="SpriteFont1.spritefont">
       <Name>DebugFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Font\textFont.spritefont">
+    <Compile Include="textFont.spritefont">
       <Name>textFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
