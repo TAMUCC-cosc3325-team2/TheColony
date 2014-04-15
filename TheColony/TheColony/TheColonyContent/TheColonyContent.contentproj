@@ -42,21 +42,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UI\Pointer.png">
+    <Compile Include="Pointer.png">
       <Name>Pointer</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Background\GameMenu.jpg">
+    <Compile Include="GameMenu.jpg">
       <Name>GameMenu</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UI\GameMenuButton1.jpg">
+    <Compile Include="GameMenuButton1.jpg">
       <Name>GameMenuButton1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -77,7 +77,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UI\gameHUD.png">
+    <Compile Include="gameHUD.png">
       <Name>gameHUD</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
@@ -91,42 +91,42 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Background\Background_Image.jpg">
+    <Compile Include="Background_Image.jpg">
       <Name>background</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprite\radSprite_temp.png">
+    <Compile Include="radSprite_temp.png">
       <Name>radSprite_temp</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Background\background0.png">
+    <Compile Include="background0.png">
       <Name>background0</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Background\background1.png">
+    <Compile Include="background1.png">
       <Name>background1</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Background\background2.png">
+    <Compile Include="background2.png">
       <Name>background2</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Background\background3.png">
+    <Compile Include="background3.png">
       <Name>background3</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
