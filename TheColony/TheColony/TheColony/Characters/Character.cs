@@ -24,16 +24,16 @@ namespace TheColony
 
         #region character's lore-related attributes
 
-        public string name;             //character's name
-        public int age;                 //character's age
-        public string birthPlace;       //character's birth place
-        public string occupation;       //character's occupation(s)
-        public string education;        //character's education
-        public string backstory;        //character's backstory
+        public string name;            //character's name
+        public int age;                //character's age
+        public string birthPlace;      //character's birth place
+        public string occupation;    //character's occupation(s)
+        public string education;     //character's education
+        public string backstory;       //character's backstory
 
         #endregion
 
-        public Character(Game1 game)
+        public Character(Game game)
             : base(game)
         { 
         

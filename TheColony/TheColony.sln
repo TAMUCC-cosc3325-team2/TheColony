@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheColony", "TheColony\TheColony\TheColony.csproj", "{B5AD8FC6-6975-417B-9881-EDFC587DE756}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "TheColonyContent", "TheColony\TheColonyContent\TheColonyContent.contentproj", "{DFBE62C8-803A-440D-A9CF-6EF97CC8FA63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheColonyContent", "TheColony\TheColonyContent\TheColonyContent.contentproj", "{DFBE62C8-803A-440D-A9CF-6EF97CC8FA63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStateManagement", "GameStateManagement\GameStateManagement.csproj", "{525095D7-2893-4D82-965B-CFF985BB1219}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +19,10 @@ Global
 		{B5AD8FC6-6975-417B-9881-EDFC587DE756}.Release|x86.Build.0 = Release|x86
 		{DFBE62C8-803A-440D-A9CF-6EF97CC8FA63}.Debug|x86.ActiveCfg = Debug|x86
 		{DFBE62C8-803A-440D-A9CF-6EF97CC8FA63}.Release|x86.ActiveCfg = Release|x86
+		{525095D7-2893-4D82-965B-CFF985BB1219}.Debug|x86.ActiveCfg = Debug|x86
+		{525095D7-2893-4D82-965B-CFF985BB1219}.Debug|x86.Build.0 = Debug|x86
+		{525095D7-2893-4D82-965B-CFF985BB1219}.Release|x86.ActiveCfg = Release|x86
+		{525095D7-2893-4D82-965B-CFF985BB1219}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

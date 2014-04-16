@@ -5,12 +5,13 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using GameStateManagement;
 
 namespace TheColony
 {
-    public class GameScreen
+    public class GameScreen : Screen
     {
-        private Game1 game;
+        private Game game;
         private KeyboardState lastKeyboardState;
         private MouseState lastMouseState;
         private Texture2D tHud;
@@ -19,7 +20,7 @@ namespace TheColony
         private Texture2D background1;
         private Texture2D background2;
         private Texture2D background3;
-        private Texture2D background;
+        //private Texture2D background;
         private Texture2D cursor;
         private Texture2D hilight;
         private SpriteFont debugFont;
@@ -53,16 +54,20 @@ namespace TheColony
         //NOTE: Possibly make a Characters class that has all our character objects instead of using a list
         //it would basically function like a list but can include any needed methods
         private List<Character> characterList;
-        
-        public GameScreen(Game1 game)
-        {
-            this.game = game;
 
+        public GameScreen()
+        {
+
+        }
+
+        public override void Activate()
+        {
+            game = ScreenManager.game;
             //load textures to be used in game
             tHud = game.Content.Load<Texture2D>(@"UI\gameHUD");
             player_temp = game.Content.Load<Texture2D>(@"Sprite\radSprite_temp");   //temporary sprite to test movement
             cursor = game.Content.Load<Texture2D>(@"UI\Pointer");                   //sprite for cursor
-            background = game.Content.Load<Texture2D>(@"Background\background");    //image for background
+            //background = game.Content.Load<Texture2D>(@"Background\background");    //image for background
             background0 = game.Content.Load<Texture2D>(@"Background\background0");  //larger, better looking background
             background1 = game.Content.Load<Texture2D>(@"Background\background1");  //larger, better looking background
             background2 = game.Content.Load<Texture2D>(@"Background\background2");  //larger, better looking background
@@ -76,8 +81,8 @@ namespace TheColony
             lastMouseState = Mouse.GetState();
 
             //camera object used for viewing game world
-            camera = new Camera();          
-            spriteBatch = new SpriteBatch(game.GraphicsDevice);
+            camera = new Camera();
+            spriteBatch = ScreenManager.SpriteBatch;
 
             //different viewports to display different game elements
             defaultView = game.GraphicsDevice.Viewport;
@@ -103,9 +108,11 @@ namespace TheColony
             addCharacters();        //Adds characters to the game(unfinished)
         }
 
-        public void Update()
+        public override void Unload() { }
+
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
-            
+
             key = Keyboard.GetState();
             mouse = Mouse.GetState();
 
@@ -129,7 +136,7 @@ namespace TheColony
                 camera.Pan(new Vector2(-1, -1));
             else if (mouse.Y > gameView.Height - 50 && mouse.X < gameView.Width)
                 camera.Pan(new Vector2(1, 1));
-            #endregion 
+            #endregion
 
             //gets left mouse click and updates player position
             if (mouse.LeftButton == ButtonState.Pressed && mouse.X < gameView.Width)
@@ -162,9 +169,12 @@ namespace TheColony
 
             //lastKeyboardState = currentKeyboardState;
             //lastMouseState = currentMouseState;
+
+            base.Update(gameTime, otherScreenHasFocus, false);
         }
 
-        public void Draw()
+
+        public override void Draw(GameTime gameTime)
         {
             //default viewport, the hud is displayed here
             game.GraphicsDevice.Viewport = defaultView;
@@ -206,7 +216,7 @@ namespace TheColony
             spriteBatch.Draw(player_temp, Vector2.Transform(playerPosition, camera.getTransformation(game.GraphicsDevice)), Color.White);
             #endregion
             spriteBatch.End();
-            
+
             //back to default viewport to draw cursor on top of everything
             //debug info is also drawn here
             game.GraphicsDevice.Viewport = defaultView;
@@ -217,14 +227,12 @@ namespace TheColony
             spriteBatch.DrawString(debugFont, "Character Position: " + playerPosition, new Vector2(0, 24), Color.Red);
             spriteBatch.DrawString(debugFont, "Tile #: " + tileEngine(Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)))), new Vector2(0, 36), Color.Red);
             //spriteBatch.DrawString(debugFont, "TileStartPos: " + Vector2.Transform(new Vector2(737, 1991), camera.getTransformation(game.GraphicsDevice)), new Vector2(0, 36), Color.Red);
-            #endregion 
+            #endregion
             #region draw cursor
             spriteBatch.Draw(cursor, mousePosition, Color.White);
             #endregion
             spriteBatch.End();
-            
         }
-
 
         //method to add characters to the game
         private void addCharacters()
@@ -239,7 +247,6 @@ namespace TheColony
             //Still more characters to add, but can do that later.
             //Possibly get character info from a .dat file
         }
-
 
         //Temporary "tile engine"
         //unfinished

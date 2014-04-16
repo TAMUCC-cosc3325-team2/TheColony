@@ -60,6 +60,9 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GameStateManagement">
+      <HintPath>..\..\GameStateManagement\bin\x86\Debug\GameStateManagement.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
@@ -109,14 +112,15 @@
   <ItemGroup>
     <Compile Include="Camera.cs" />
     <Compile Include="Characters\Character.cs" />
-    <Compile Include="CharacterScreen.cs" />
     <Compile Include="Characters\Leroy_Jenkins.cs" />
     <Compile Include="Characters\Richard_Blase.cs" />
     <Compile Include="Characters\Samantha.cs" />
-    <Compile Include="GameOverScreen.cs" />
     <Compile Include="GameScreen.cs" />
-    <Compile Include="MapScreen.cs" />
-    <Compile Include="MenuScreen.cs" />
+    <Compile Include="Screens\CharacterMenu.cs" />
+    <Compile Include="Screens\HelpMenu.cs" />
+    <Compile Include="Screens\MenuBackground.cs" />
+    <Compile Include="Screens\ScenarioMenu.cs" />
+    <Compile Include="Screens\MainMenu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />

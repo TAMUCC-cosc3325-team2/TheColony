@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace TheColony
 {
     class Samantha : Character
     {
-        public Samantha(Game1 game)
+        public Samantha(Game game)
             : base(game)
         {
             name = "Samantha";
