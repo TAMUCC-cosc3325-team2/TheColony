@@ -21,6 +21,7 @@ namespace TheColony
         private Texture2D background3;
         private Texture2D background;
         private Texture2D cursor;
+        private Texture2D hilight;
         private SpriteFont debugFont;
 
         private GraphicsDeviceManager graphics;
@@ -40,6 +41,9 @@ namespace TheColony
         private Vector2 playerPosition;
         private Vector2 playerOffset;
         private Vector2 playerNewPosition;
+        private Vector2 hilightPosition;
+
+        private Rectangle tileArea;
 
         private int TILE_WIDTH;
         private int TILE_HEIGHT;
@@ -63,6 +67,7 @@ namespace TheColony
             background1 = game.Content.Load<Texture2D>(@"Background\background1");  //larger, better looking background
             background2 = game.Content.Load<Texture2D>(@"Background\background2");  //larger, better looking background
             background3 = game.Content.Load<Texture2D>(@"Background\background3");  //larger, better looking background
+            hilight = game.Content.Load<Texture2D>(@"UI\TileHilight");              //hilight texture
             debugFont = game.Content.Load<SpriteFont>(@"Font\DebugFont");           //font for debug info
             
             //currently not used but will probably be used eventually
@@ -79,10 +84,13 @@ namespace TheColony
             gameView = defaultView; 
             gameView.Width = gameView.Width - tHud.Width; //viewport for player's camera
 
-            TILE_HEIGHT = 264;
-            TILE_WIDTH = 264;
+
+            TILE_HEIGHT = 256;
+            TILE_WIDTH = 256;
             OFFSET_X = -1360;
             OFFSET_Y = -1242;
+
+            tileArea = new Rectangle(OFFSET_X, OFFSET_Y, TILE_WIDTH * 10, TILE_HEIGHT * 10);
 
             #region temporary player attributes just to test player movement 
             playerPosition = new Vector2(700,600);
@@ -131,6 +139,15 @@ namespace TheColony
             }
 
 
+            //update tile hilight position
+            if (tileArea.Contains((int)mousePosition.X, (int)mousePosition.Y))
+            {
+                hilightPosition = tileEngine(Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice))));
+                hilightPosition.X = hilightPosition.X * TILE_WIDTH + tileArea.X;
+                hilightPosition.Y = hilightPosition.Y * TILE_HEIGHT + tileArea.Y;
+            }
+
+
             //player movement
             if ((playerPosition - playerNewPosition).LengthSquared() > 25)
             {
@@ -176,6 +193,12 @@ namespace TheColony
             spriteBatch.Draw(background2, new Vector2(-background2.Width, 0), Color.White);
             spriteBatch.Draw(background3, new Vector2(0, 0), Color.White);
             //spriteBatch.Draw(background, new Vector2(-background.Width / 2, -background.Height / 2), Color.White);
+            #endregion
+            #region draw tile hilight
+            if (tileArea.Contains((int)mousePosition.X, (int)mousePosition.Y))
+            {
+                spriteBatch.Draw(hilight, hilightPosition, Color.White);
+            }
             #endregion
             spriteBatch.End();
             spriteBatch.Begin();
