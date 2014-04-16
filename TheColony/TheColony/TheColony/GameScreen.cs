@@ -23,6 +23,8 @@ namespace TheColony
         //private Texture2D background;
         private Texture2D cursor;
         private Texture2D hilight;
+        private Texture2D buildIcon;
+        private Texture2D well0;
         private SpriteFont debugFont;
 
         private GraphicsDeviceManager graphics;
@@ -43,17 +45,23 @@ namespace TheColony
         private Vector2 playerOffset;
         private Vector2 playerNewPosition;
         private Vector2 hilightPosition;
+        private Vector2 mouseWorldPosition;
+        private Vector2 buildLocation;
 
         private Rectangle tileArea;
 
-        private int TILE_WIDTH;
-        private int TILE_HEIGHT;
+        private float TILE_WIDTH;
+        private float TILE_HEIGHT;
         private int OFFSET_X;
         private int OFFSET_Y;
+
+        private bool drawDebug;
+        private bool building;
 
         //NOTE: Possibly make a Characters class that has all our character objects instead of using a list
         //it would basically function like a list but can include any needed methods
         private List<Character> characterList;
+        private List<Tile> tileList;
 
         public GameScreen()
         {
@@ -65,7 +73,7 @@ namespace TheColony
             game = ScreenManager.game;
             //load textures to be used in game
             tHud = game.Content.Load<Texture2D>(@"UI\gameHUD");
-            player_temp = game.Content.Load<Texture2D>(@"Sprite\radSprite_temp");   //temporary sprite to test movement
+            player_temp = game.Content.Load<Texture2D>(@"Sprite\Characters\radSprite_temp");   //temporary sprite to test movement
             cursor = game.Content.Load<Texture2D>(@"UI\Pointer");                   //sprite for cursor
             //background = game.Content.Load<Texture2D>(@"Background\background");    //image for background
             background0 = game.Content.Load<Texture2D>(@"Background\background0");  //larger, better looking background
@@ -73,6 +81,8 @@ namespace TheColony
             background2 = game.Content.Load<Texture2D>(@"Background\background2");  //larger, better looking background
             background3 = game.Content.Load<Texture2D>(@"Background\background3");  //larger, better looking background
             hilight = game.Content.Load<Texture2D>(@"UI\TileHilight");              //hilight texture
+            well0 = game.Content.Load<Texture2D>(@"Sprite\Buildings\well");         //well texture
+            buildIcon = game.Content.Load<Texture2D>(@"UI\build_icon");             //cursor to place buildings
             debugFont = game.Content.Load<SpriteFont>(@"Font\DebugFont");           //font for debug info
             
             //currently not used but will probably be used eventually
@@ -90,12 +100,12 @@ namespace TheColony
             gameView.Width = gameView.Width - tHud.Width; //viewport for player's camera
 
 
-            TILE_HEIGHT = 256;
-            TILE_WIDTH = 256;
-            OFFSET_X = -1360;
-            OFFSET_Y = -1242;
+            TILE_HEIGHT = 260.5f;
+            TILE_WIDTH = 260.5f;
+            OFFSET_X = -1300;
+            OFFSET_Y = -1300;
 
-            tileArea = new Rectangle(OFFSET_X, OFFSET_Y, TILE_WIDTH * 10, TILE_HEIGHT * 10);
+            tileArea = new Rectangle(OFFSET_X, OFFSET_Y, (int)TILE_WIDTH * 10, (int)TILE_HEIGHT * 10);
 
             #region temporary player attributes just to test player movement 
             playerPosition = new Vector2(700,600);
@@ -105,7 +115,10 @@ namespace TheColony
             #endregion 
 
             characterList = new List<Character>();
+            tileList = new List<Tile>();
             addCharacters();        //Adds characters to the game(unfinished)
+
+            drawDebug = false;
         }
 
         public override void Unload() { }
@@ -138,20 +151,39 @@ namespace TheColony
                 camera.Pan(new Vector2(1, 1));
             #endregion
 
+            mouseWorldPosition = Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)));
+
             //gets left mouse click and updates player position
-            if (mouse.LeftButton == ButtonState.Pressed && mouse.X < gameView.Width)
+            if (mouse.LeftButton == ButtonState.Pressed && mouse.X < gameView.Width && !building)
             {
-                playerNewPosition = Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)));
+                playerNewPosition = mouseWorldPosition;
                 playerNewPosition = playerNewPosition + playerOffset;
             }
 
 
             //update tile hilight position
-            if (tileArea.Contains((int)mousePosition.X, (int)mousePosition.Y))
+            if (tileArea.Contains((int)Math.Ceiling(mouseWorldPosition.X), (int)Math.Ceiling(mouseWorldPosition.Y)))
             {
-                hilightPosition = tileEngine(Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice))));
-                hilightPosition.X = hilightPosition.X * TILE_WIDTH + tileArea.X;
-                hilightPosition.Y = hilightPosition.Y * TILE_HEIGHT + tileArea.Y;
+                hilightPosition = tileEngine(mouseWorldPosition);
+                hilightPosition.X = hilightPosition.X * TILE_WIDTH + OFFSET_X;
+                hilightPosition.Y = hilightPosition.Y * TILE_HEIGHT + OFFSET_Y;
+            }
+
+            if (key.IsKeyDown(Keys.B) && lastKeyboardState.IsKeyUp(Keys.B) && building)
+                building = false;
+            else if (key.IsKeyDown(Keys.B) && lastKeyboardState.IsKeyUp(Keys.B) && !building)
+                building = true;
+
+            //place building
+            if (tileArea.Contains((int)Math.Ceiling(mouseWorldPosition.X), (int)Math.Ceiling(mouseWorldPosition.Y)) &&
+                mouse.LeftButton == ButtonState.Pressed && lastMouseState.LeftButton == ButtonState.Released && building)
+            {
+                tileList.Add(new Tile(game));
+                int temp = tileList.Count;
+                tileList[temp - 1].HasStructure = true;
+                tileList[temp - 1].Position = hilightPosition;
+                tileList[temp - 1].Texture = game.Content.Load<Texture2D>(@"Sprite\Buildings\well");
+                
             }
 
 
@@ -165,10 +197,15 @@ namespace TheColony
             }
             else
                 playerPosition = playerNewPosition;
+            
+            if (key.IsKeyDown(Keys.D) && lastKeyboardState.IsKeyUp(Keys.D) && drawDebug)
+                drawDebug = false;
+            else if (key.IsKeyDown(Keys.D) && lastKeyboardState.IsKeyUp(Keys.D) && !drawDebug)
+                drawDebug = true;
 
 
-            //lastKeyboardState = currentKeyboardState;
-            //lastMouseState = currentMouseState;
+            lastKeyboardState = key;
+            lastMouseState = mouse;
 
             base.Update(gameTime, otherScreenHasFocus, false);
         }
@@ -187,7 +224,7 @@ namespace TheColony
 
             //camera's viewport, the game world is displayed here
             game.GraphicsDevice.Viewport = gameView;
-            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, null, null, null, null, camera.getTransformation(game.GraphicsDevice));
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.getTransformation(game.GraphicsDevice));
             #region draw background
 
             //                                           ______________ ______________
@@ -203,18 +240,28 @@ namespace TheColony
             spriteBatch.Draw(background2, new Vector2(-background2.Width, 0), Color.White);
             spriteBatch.Draw(background3, new Vector2(0, 0), Color.White);
             //spriteBatch.Draw(background, new Vector2(-background.Width / 2, -background.Height / 2), Color.White);
-            #endregion
+            #endregion  
             #region draw tile hilight
-            if (tileArea.Contains((int)mousePosition.X, (int)mousePosition.Y))
+            if (tileArea.Contains((int)mouseWorldPosition.X, (int)mouseWorldPosition.Y))
             {
                 spriteBatch.Draw(hilight, hilightPosition, Color.White);
             }
             #endregion
             spriteBatch.End();
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             #region draw player
             spriteBatch.Draw(player_temp, Vector2.Transform(playerPosition, camera.getTransformation(game.GraphicsDevice)), Color.White);
             #endregion
+            if (tileList.Count > 0)
+            {
+                foreach (Tile tile in tileList)
+                {
+                    if (tile.HasStructure)
+                    {
+                        spriteBatch.Draw(tile.Texture, Vector2.Transform(tile.Position, camera.getTransformation(game.GraphicsDevice)), Color.White);
+                    }
+                }
+            }
             spriteBatch.End();
 
             //back to default viewport to draw cursor on top of everything
@@ -222,14 +269,20 @@ namespace TheColony
             game.GraphicsDevice.Viewport = defaultView;
             spriteBatch.Begin();
             #region draw debug info
-            spriteBatch.DrawString(debugFont, "Mouse Position: " + mouse.ToString(), new Vector2(0, 0), Color.Red);
-            spriteBatch.DrawString(debugFont, "Mouse's World Position: " + Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice))), new Vector2(0, 12), Color.Red);
-            spriteBatch.DrawString(debugFont, "Character Position: " + playerPosition, new Vector2(0, 24), Color.Red);
-            spriteBatch.DrawString(debugFont, "Tile #: " + tileEngine(Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)))), new Vector2(0, 36), Color.Red);
-            //spriteBatch.DrawString(debugFont, "TileStartPos: " + Vector2.Transform(new Vector2(737, 1991), camera.getTransformation(game.GraphicsDevice)), new Vector2(0, 36), Color.Red);
+            if (drawDebug)
+            {
+                spriteBatch.DrawString(debugFont, "Mouse Position: " + mouse.ToString(), new Vector2(0, 0), Color.Red);
+                spriteBatch.DrawString(debugFont, "Mouse's World Position: " + mouseWorldPosition, new Vector2(0, 12), Color.Red);
+                spriteBatch.DrawString(debugFont, "Character Position: " + playerPosition, new Vector2(0, 24), Color.Red);
+                spriteBatch.DrawString(debugFont, "Tile #: " + tileEngine(Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)))), new Vector2(0, 36), Color.Red);
+                spriteBatch.DrawString(debugFont, "Tile Hilight Position: " + hilightPosition, new Vector2(0, 48), Color.Red);
+            }
             #endregion
             #region draw cursor
-            spriteBatch.Draw(cursor, mousePosition, Color.White);
+            if (!building)
+                spriteBatch.Draw(cursor, mousePosition, Color.White);
+            else
+                spriteBatch.Draw(buildIcon, mousePosition, Color.White);
             #endregion
             spriteBatch.End();
         }

@@ -201,13 +201,27 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Sprite\radSprite.png">
+    <Compile Include="Sprite\Characters\radSprite.png">
       <Name>radSprite</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Sprite\radSprite_temp.png">
+    <Compile Include="Sprite\Characters\radSprite_temp.png">
       <Name>radSprite_temp</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Sprite\Buildings\well.png">
+      <Name>well</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="UI\build_icon.png">
+      <Name>build_icon</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

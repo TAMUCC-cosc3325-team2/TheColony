@@ -26,7 +26,7 @@ namespace TheColony
             dealsDamage = false;
             isUnconscious = false;
             isAvailable = true;
-            characterSprite = game.Content.Load<Texture2D>(@"Sprite\radSprite");
+            characterSprite = game.Content.Load<Texture2D>(@"Sprite\Characters\radSprite");
         }
     }
 }
