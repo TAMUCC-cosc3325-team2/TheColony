@@ -43,6 +43,8 @@ namespace TheColony
 
         private int TILE_WIDTH;
         private int TILE_HEIGHT;
+        private int OFFSET_X;
+        private int OFFSET_Y;
 
         //NOTE: Possibly make a Characters class that has all our character objects instead of using a list
         //it would basically function like a list but can include any needed methods
@@ -77,8 +79,10 @@ namespace TheColony
             gameView = defaultView; 
             gameView.Width = gameView.Width - tHud.Width; //viewport for player's camera
 
-            TILE_HEIGHT = 200;
-            TILE_WIDTH = 200;
+            TILE_HEIGHT = 264;
+            TILE_WIDTH = 264;
+            OFFSET_X = -1360;
+            OFFSET_Y = -1242;
 
             #region temporary player attributes just to test player movement 
             playerPosition = new Vector2(700,600);
@@ -186,9 +190,9 @@ namespace TheColony
             spriteBatch.Begin();
             #region draw debug info
             spriteBatch.DrawString(debugFont, "Mouse Position: " + mouse.ToString(), new Vector2(0, 0), Color.Red);
-            spriteBatch.DrawString(debugFont, "Mouse's World Position: " + Vector2.Transform(mousePosition, camera.getTransformation(game.GraphicsDevice)), new Vector2(0, 12), Color.Red);
+            spriteBatch.DrawString(debugFont, "Mouse's World Position: " + Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice))), new Vector2(0, 12), Color.Red);
             spriteBatch.DrawString(debugFont, "Character Position: " + playerPosition, new Vector2(0, 24), Color.Red);
-            spriteBatch.DrawString(debugFont, "Tile #: " + tileEngine(mousePosition), new Vector2(0, 36), Color.Red);
+            spriteBatch.DrawString(debugFont, "Tile #: " + tileEngine(Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)))), new Vector2(0, 36), Color.Red);
             //spriteBatch.DrawString(debugFont, "TileStartPos: " + Vector2.Transform(new Vector2(737, 1991), camera.getTransformation(game.GraphicsDevice)), new Vector2(0, 36), Color.Red);
             #endregion 
             #region draw cursor
@@ -219,7 +223,7 @@ namespace TheColony
         //don't judge me
         private Vector2 tileEngine(Vector2 position)
         {
-            return new Vector2((int)(position.X / TILE_WIDTH), (int)(position.Y / TILE_HEIGHT));
+            return new Vector2((int)((position.X - OFFSET_X) / TILE_WIDTH), (int)((position.Y - OFFSET_Y) / TILE_HEIGHT));
         }
     }
 }
