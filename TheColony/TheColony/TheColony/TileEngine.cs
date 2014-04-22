@@ -1,51 +1,62 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-
 
 namespace TheColony
 {
-    /// <summary>
-    /// This is a game component that implements IUpdateable.
-    /// </summary>
-    public class TileEngine : Microsoft.Xna.Framework.GameComponent
+    public static class TileEngine
     {
-        Vector2 startPos;
 
-        public TileEngine(Game game)
-            : base(game)
+        static float tileHeight = 260.5f;
+        static float tileWidth = 260.5f;
+        static int offsetX = -1300;
+        static int offsetY = -1300;
+
+        static Rectangle tileArea = new Rectangle(offsetX, offsetY, (int)tileWidth * 10, (int)tileHeight * 10);
+
+        public static Rectangle TileArea
         {
-            // TODO: Construct any child components here
+            get { return tileArea; }
         }
 
-        /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
-        /// </summary>
-        public override void Initialize()
+        public static float TileHeight
         {
-            // TODO: Add your initialization code here
-            startPos = new Vector2(737, 1991);
-
-            base.Initialize();
+            get { return tileHeight; }
         }
 
-        /// <summary>
-        /// Allows the game component to update itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public override void Update(GameTime gameTime)
+        public static float TileWidth
         {
-            // TODO: Add your update code here
+            get { return tileWidth; }
+        }
 
-            base.Update(gameTime);
+        public static int OffsetX
+        {
+            get { return offsetX; }
+        }
+
+        public static int OffsetY
+        {
+            get { return offsetY; }
+        }
+
+        public static Vector2 TileNumber(Vector2 position)
+        {
+            return new Vector2((int)((position.X - offsetX) / tileWidth), (int)((position.Y - offsetY) / tileHeight));
+        }
+
+        public static Vector2 TilePosition(Vector2 position)
+        {
+            Vector2 temp = TileNumber(position);
+            return new Vector2(temp.X * TileWidth + offsetX, temp.Y * TileHeight + offsetY);
+        }
+
+        public static bool TileContains(Vector2 position)
+        {
+            if(TileArea.Contains((int)Math.Ceiling(position.X), (int)Math.Ceiling(position.Y)))
+                return true;
+            return false;
         }
     }
 }

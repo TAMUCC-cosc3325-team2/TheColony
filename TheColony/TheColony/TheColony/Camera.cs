@@ -12,11 +12,13 @@ namespace TheColony
     {
         public Vector2 position;
         public Matrix transformation;
+        GraphicsDevice graphicsDevice;
 
         //set camera to 0,0
-        public Camera()
+        public Camera(GraphicsDevice graphicsDevice)
         {
             position = new Vector2(0, 0);
+            this.graphicsDevice = graphicsDevice;
         }
 
         //Used to move the camera whenever mouse is near edge of world's viewport
@@ -29,7 +31,7 @@ namespace TheColony
         //First it takes the square background and rotates it by 45 degrees, 
         //then it scales the now diamond shaped image vertically to 63%.
         //This allows for the square image to be viewed from an isometric perspective 
-        public Matrix getTransformation(GraphicsDevice graphicsDevice)
+        public Matrix getTransformation()
         {
             Viewport viewport = graphicsDevice.Viewport;
             Vector3 axis = new Vector3(3 * MathHelper.ToRadians(45), MathHelper.ToRadians(45), 2 * MathHelper.ToRadians(45));
@@ -46,21 +48,14 @@ namespace TheColony
         //Will eventually convert mouse clicks into world coordinates
         //Untested and currently unused
         //Still trying to learn how to a matrix
-        public Matrix screenToWorld(GraphicsDevice graphicsDevice)
+        public Vector2 ScreenToWorldPos(Vector2 worldPosition)
         {
-            Viewport viewport = graphicsDevice.Viewport;
-            transformation = new Matrix();
-            transformation.M11 = 1 / 2 * viewport.Width;
-            transformation.M12 = 1 / 2 * viewport.Height;
-            transformation.M13 = -position.X / 2 * viewport.Width - position.Y / 2 * viewport.Height;
-            transformation.M21 = -1 / 2 * viewport.Width;
-            transformation.M22 = 1 / 2 * viewport.Height;
-            transformation.M23 = position.X / 2 * viewport.Width - position.Y / 2 * viewport.Height;
-            transformation.M31 = 0;
-            transformation.M32 = 0;
-            transformation.M33 = 1;
+            return Vector2.Transform(worldPosition, Matrix.Invert(getTransformation()));
+        }
 
-            return transformation;
+        public Vector2 WorldToScreenPos(Vector2 screenPosition)
+        {
+            return Vector2.Transform(screenPosition, getTransformation());
         }
     }
 }

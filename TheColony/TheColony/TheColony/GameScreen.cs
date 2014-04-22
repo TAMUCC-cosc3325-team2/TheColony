@@ -27,7 +27,6 @@ namespace TheColony
         private Texture2D well0;
         private SpriteFont debugFont;
 
-        private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
         private Viewport defaultView;
@@ -46,14 +45,6 @@ namespace TheColony
         private Vector2 playerNewPosition;
         private Vector2 hilightPosition;
         private Vector2 mouseWorldPosition;
-        private Vector2 buildLocation;
-
-        private Rectangle tileArea;
-
-        private float TILE_WIDTH;
-        private float TILE_HEIGHT;
-        private int OFFSET_X;
-        private int OFFSET_Y;
 
         private bool drawDebug;
         private bool building;
@@ -91,21 +82,13 @@ namespace TheColony
             lastMouseState = Mouse.GetState();
 
             //camera object used for viewing game world
-            camera = new Camera();
+            camera = new Camera(game.GraphicsDevice);
             spriteBatch = ScreenManager.SpriteBatch;
 
             //different viewports to display different game elements
             defaultView = game.GraphicsDevice.Viewport;
             gameView = defaultView; 
             gameView.Width = gameView.Width - tHud.Width; //viewport for player's camera
-
-
-            TILE_HEIGHT = 260.5f;
-            TILE_WIDTH = 260.5f;
-            OFFSET_X = -1300;
-            OFFSET_Y = -1300;
-
-            tileArea = new Rectangle(OFFSET_X, OFFSET_Y, (int)TILE_WIDTH * 10, (int)TILE_HEIGHT * 10);
 
             #region temporary player attributes just to test player movement 
             playerPosition = new Vector2(700,600);
@@ -116,7 +99,7 @@ namespace TheColony
 
             characterList = new List<Character>();
             tileList = new List<Tile>();
-            addCharacters();        //Adds characters to the game(unfinished)
+            addCharacters();        //Adds characters to the game (unfinished)
 
             drawDebug = false;
         }
@@ -131,13 +114,11 @@ namespace TheColony
 
             mousePosition = new Vector2(mouse.X, mouse.Y);
 
+            mouseWorldPosition = camera.ScreenToWorldPos(mousePosition);
+
             //allows game to exit
             if (key.IsKeyDown(Keys.Escape))
                 game.Exit();
-
-            //allows to toggle fullscreen       **will crash. Probably a problem with the camera...maybe
-            //if (key.IsKeyDown(Keys.F))
-            //    graphics.ToggleFullScreen();
 
             //moves camera when cursor is near edge of camera's viewport
             #region pan cursor
@@ -151,22 +132,33 @@ namespace TheColony
                 camera.Pan(new Vector2(1, 1));
             #endregion
 
-            mouseWorldPosition = Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)));
+            
 
             //gets left mouse click and updates player position
-            if (mouse.LeftButton == ButtonState.Pressed && mouse.X < gameView.Width && !building)
+            if (mouse.LeftButton == ButtonState.Pressed && mouse.X < gameView.Width)
             {
-                playerNewPosition = mouseWorldPosition;
-                playerNewPosition = playerNewPosition + playerOffset;
+                if (building)
+                {
+                    if ((playerPosition - hilightPosition).LengthSquared() < 1000)
+                        playerNewPosition = playerPosition;
+                    else
+                    {
+                        playerNewPosition = hilightPosition;
+                        playerNewPosition = playerNewPosition + playerOffset;
+                    }
+                }
+
+                else
+                {
+                    playerNewPosition = mouseWorldPosition;
+                    playerNewPosition = playerNewPosition + playerOffset;
+                }
             }
 
-
             //update tile hilight position
-            if (tileArea.Contains((int)Math.Ceiling(mouseWorldPosition.X), (int)Math.Ceiling(mouseWorldPosition.Y)))
+            if (TileEngine.TileContains(mouseWorldPosition))
             {
-                hilightPosition = tileEngine(mouseWorldPosition);
-                hilightPosition.X = hilightPosition.X * TILE_WIDTH + OFFSET_X;
-                hilightPosition.Y = hilightPosition.Y * TILE_HEIGHT + OFFSET_Y;
+                hilightPosition = TileEngine.TilePosition(mouseWorldPosition);
             }
 
             if (key.IsKeyDown(Keys.B) && lastKeyboardState.IsKeyUp(Keys.B) && building)
@@ -175,8 +167,10 @@ namespace TheColony
                 building = true;
 
             //place building
-            if (tileArea.Contains((int)Math.Ceiling(mouseWorldPosition.X), (int)Math.Ceiling(mouseWorldPosition.Y)) &&
-                mouse.LeftButton == ButtonState.Pressed && lastMouseState.LeftButton == ButtonState.Released && building)
+            if (TileEngine.TileContains(mouseWorldPosition) &&
+                mouse.LeftButton == ButtonState.Pressed && 
+                lastMouseState.LeftButton == ButtonState.Released &&
+                building)
             {
                 tileList.Add(new Tile(game));
                 int temp = tileList.Count;
@@ -224,7 +218,7 @@ namespace TheColony
 
             //camera's viewport, the game world is displayed here
             game.GraphicsDevice.Viewport = gameView;
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.getTransformation(game.GraphicsDevice));
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.getTransformation());
             #region draw background
 
             //                                           ______________ ______________
@@ -242,7 +236,7 @@ namespace TheColony
             //spriteBatch.Draw(background, new Vector2(-background.Width / 2, -background.Height / 2), Color.White);
             #endregion  
             #region draw tile hilight
-            if (tileArea.Contains((int)mouseWorldPosition.X, (int)mouseWorldPosition.Y))
+            if (TileEngine.TileContains(mouseWorldPosition))
             {
                 spriteBatch.Draw(hilight, hilightPosition, Color.White);
             }
@@ -250,18 +244,20 @@ namespace TheColony
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
             #region draw player
-            spriteBatch.Draw(player_temp, Vector2.Transform(playerPosition, camera.getTransformation(game.GraphicsDevice)), Color.White);
+            spriteBatch.Draw(player_temp, camera.WorldToScreenPos(playerPosition), Color.White);
             #endregion
+            #region draw tile structures
             if (tileList.Count > 0)
             {
                 foreach (Tile tile in tileList)
                 {
                     if (tile.HasStructure)
                     {
-                        spriteBatch.Draw(tile.Texture, Vector2.Transform(tile.Position, camera.getTransformation(game.GraphicsDevice)), Color.White);
+                        spriteBatch.Draw(tile.Texture, camera.WorldToScreenPos(tile.Position), Color.White);
                     }
                 }
             }
+            #endregion
             spriteBatch.End();
 
             //back to default viewport to draw cursor on top of everything
@@ -274,8 +270,9 @@ namespace TheColony
                 spriteBatch.DrawString(debugFont, "Mouse Position: " + mouse.ToString(), new Vector2(0, 0), Color.Red);
                 spriteBatch.DrawString(debugFont, "Mouse's World Position: " + mouseWorldPosition, new Vector2(0, 12), Color.Red);
                 spriteBatch.DrawString(debugFont, "Character Position: " + playerPosition, new Vector2(0, 24), Color.Red);
-                spriteBatch.DrawString(debugFont, "Tile #: " + tileEngine(Vector2.Transform(mousePosition, Matrix.Invert(camera.getTransformation(game.GraphicsDevice)))), new Vector2(0, 36), Color.Red);
+                spriteBatch.DrawString(debugFont, "Tile #: " + TileEngine.TileNumber(mouseWorldPosition), new Vector2(0, 36), Color.Red);
                 spriteBatch.DrawString(debugFont, "Tile Hilight Position: " + hilightPosition, new Vector2(0, 48), Color.Red);
+                spriteBatch.DrawString(debugFont, "Number of tiles: " + tileList.Count, new Vector2(0, 60), Color.Red);
             }
             #endregion
             #region draw cursor
@@ -299,14 +296,6 @@ namespace TheColony
 
             //Still more characters to add, but can do that later.
             //Possibly get character info from a .dat file
-        }
-
-        //Temporary "tile engine"
-        //unfinished
-        //don't judge me
-        private Vector2 tileEngine(Vector2 position)
-        {
-            return new Vector2((int)((position.X - OFFSET_X) / TILE_WIDTH), (int)((position.Y - OFFSET_Y) / TILE_HEIGHT));
         }
     }
 }
