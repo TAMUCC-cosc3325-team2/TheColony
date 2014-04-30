@@ -66,7 +66,14 @@ namespace TheColony
                 switch (vSelectedIndex)
                 {
                     case 0:
-                        ScreenManager.AddScreen(new CharacterMenu());
+                        /**passes selected apocalypse to character menu screen:
+                         * 0: Nuclear Warfare
+                         * 1: Chemical Warfare
+                         * 2: Biblical Apocalypse
+                         * 3: Natural Disaster
+                         * Right now it defaults to 0
+                         */
+                        ScreenManager.AddScreen(new CharacterMenu(hSelectedIndex));
                         ScreenManager.RemoveScreen(this);
                         break;
                     case 1:

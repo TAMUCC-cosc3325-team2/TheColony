@@ -88,12 +88,11 @@ namespace TheColony
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
             Vector2 location = position;
             Color tint;
-            Random random = new Random();
-
+            
             spriteBatch.Begin();
             
             //display title
-            spriteBatch.DrawString(headerFont, header, new Vector2((((ScreenManager.GraphicsDevice.Viewport.Width - 437) / 2) - 2) + random.Next(5), (((ScreenManager.GraphicsDevice.Viewport.Height / 4) - 82) - 2) + random.Next(5)), Color.White);
+            spriteBatch.DrawString(headerFont, header, new Vector2((ScreenManager.GraphicsDevice.Viewport.Width - 437) / 2, (ScreenManager.GraphicsDevice.Viewport.Height - 82) / 4), Color.White);
             
             //display menu items
             for (int i = 0; i < menuItems.Length; i++)

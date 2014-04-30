@@ -11,6 +11,7 @@ namespace TheColony
 {
     public class CharacterMenu : Screen
     {
+        int Scenario;
         SpriteFont headerFont, textFont;
         String header = "Select Character";
         Texture2D card10;
@@ -62,7 +63,9 @@ namespace TheColony
 
         #endregion
 
-        public CharacterMenu() { }
+        public CharacterMenu(int s) {
+            Scenario = s;
+        }
 
         public override void Activate()
         {
@@ -100,7 +103,19 @@ namespace TheColony
                 switch (vSelectedIndex)
                 {
                     case 0:
-                        ScreenManager.AddScreen(new GameScreen());
+                        /* passes scenario and character to game screen. base defaults to 0
+                         * 0: Richard Blase
+                         * 1: Samantha Villarreal
+                         * 2: Michael Canders
+                         * 3: Leroy Jenkins
+                         * 4: Cara Diego
+                         * 5: Steven Howler
+                         * 6: JR Wilson
+                         * 7: Jessica Craft
+                         * 8: Shawna Johnson
+                         * 9: Tyson Beetley
+                         */
+                        ScreenManager.AddScreen(new GameScreen(Scenario, hSelectedIndex, 0));
                         break;
                     case 1:
                         ScreenManager.AddScreen(new ScenarionMenu());

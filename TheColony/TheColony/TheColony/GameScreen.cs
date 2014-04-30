@@ -12,6 +12,7 @@ namespace TheColony
     public class GameScreen : Screen
     {
         private Game game;
+        private int Scenario, Character, Base;
         private KeyboardState lastKeyboardState;
         private MouseState lastMouseState;
         private Texture2D tHud;
@@ -54,9 +55,11 @@ namespace TheColony
         private List<Character> characterList;
         private List<Tile> tileList;
 
-        public GameScreen()
+        public GameScreen(int s, int c, int b)
         {
-
+            Scenario = s;
+            Character = c;
+            Base = b;
         }
 
         public override void Activate()
