@@ -113,7 +113,6 @@ namespace TheColony
             mouse = Mouse.GetState();
 
             mousePosition = new Vector2(mouse.X, mouse.Y);
-
             mouseWorldPosition = camera.ScreenToWorldPos(mousePosition);
 
             //allows game to exit
@@ -161,6 +160,7 @@ namespace TheColony
                 hilightPosition = TileEngine.TilePosition(mouseWorldPosition);
             }
 
+            //toggle build state
             if (key.IsKeyDown(Keys.B) && lastKeyboardState.IsKeyUp(Keys.B) && building)
                 building = false;
             else if (key.IsKeyDown(Keys.B) && lastKeyboardState.IsKeyUp(Keys.B) && !building)
@@ -192,6 +192,7 @@ namespace TheColony
             else
                 playerPosition = playerNewPosition;
             
+            //toggle debug text
             if (key.IsKeyDown(Keys.D) && lastKeyboardState.IsKeyUp(Keys.D) && drawDebug)
                 drawDebug = false;
             else if (key.IsKeyDown(Keys.D) && lastKeyboardState.IsKeyUp(Keys.D) && !drawDebug)
@@ -236,7 +237,9 @@ namespace TheColony
             //spriteBatch.Draw(background, new Vector2(-background.Width / 2, -background.Height / 2), Color.White);
             #endregion  
             #region draw tile hilight
-            if (TileEngine.TileContains(mouseWorldPosition))
+            if (TileEngine.TileContains(mouseWorldPosition) &&
+                (0 < mousePosition.X && mousePosition.X < gameView.Width) &&
+                (0 < mousePosition.Y && mousePosition.Y < gameView.Height))
             {
                 spriteBatch.Draw(hilight, hilightPosition, Color.White);
             }
